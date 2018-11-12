@@ -8,8 +8,11 @@ public class PlayerStats : MonoBehaviour {
     public float damage = 20f;
     public float cooldown = 1f;
 
+    public int storageCapacity = 20;
 
-	void Start () {
+
+
+    void Start () {
 		
 	}
 	
