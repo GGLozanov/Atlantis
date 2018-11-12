@@ -16,6 +16,7 @@ public class PlayerInventory : MonoBehaviour {
     void Update()
     {
         if (Input.GetButtonDown("Inventory")) {
+            Debug.Log(gameObject.GetComponent<PlayerStats>().level);
             for (int i = 0; i < storageIndicator; i++) {
                 Debug.Log("Item: " + storage[i].name);
             }
@@ -29,7 +30,7 @@ public class PlayerInventory : MonoBehaviour {
             Destroy(other.gameObject);
         }
     }
-   
+
     private void pickItem(GameObject other) {
         storage[storageIndicator] = Instantiate(other);
         storageIndicator++;
