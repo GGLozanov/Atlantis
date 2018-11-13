@@ -8,9 +8,12 @@ public class EnemyController : MonoBehaviour {
     private float lookRadius;
     private float cooldown;
     private float damage;
-    private float timer;
-    private Vector3 spawnPoint, distanceCovored, spawnLocation;
-    private bool follow = true;
+    private float timer, timer2 ,  wonderTimer = 5f;
+
+    public float wanderRadius;
+
+    private Vector3 spawnPoint, distanceCovored, spawnLocation, newPos;
+    private bool follow = true, returnIndicator = false;
     GameObject target;
     NavMeshAgent agent;
 
@@ -19,6 +22,7 @@ public class EnemyController : MonoBehaviour {
         target = GameObject.Find("Player");
         agent = GetComponent<NavMeshAgent>();
         timer = cooldown;
+        timer2 = wonderTimer;
         damage = gameObject.GetComponent<EnemyStats>().damage;
         cooldown = gameObject.GetComponent<EnemyStats>().cooldown;
         lookRadius = gameObject.GetComponent<EnemyStats>().lookRadius;
@@ -28,11 +32,11 @@ public class EnemyController : MonoBehaviour {
 
 	void Update () {
         float distance = Vector3.Distance(target.transform.position, transform.position);
-        Vector3 currentLocation = new Vector3(Mathf.Abs(transform.position.x), Mathf.Abs(transform.position.y));
-        distanceCovored = spawnLocation - currentLocation;
-
+        timer2 += Time.deltaTime;
         if (distance <= lookRadius && follow == true)
         {
+            Vector3 currentLocation = new Vector3(Mathf.Abs(transform.position.x), Mathf.Abs(transform.position.y));
+            distanceCovored = spawnLocation - currentLocation;
             timer -= Time.deltaTime;
             agent.SetDestination(target.transform.position);
             if (distance <= agent.stoppingDistance)
@@ -46,7 +50,19 @@ public class EnemyController : MonoBehaviour {
             }
         }
         else {
-            agent.SetDestination(spawnPoint);
+            if (timer2 >= wonderTimer)
+            {
+                if (returnIndicator == false) {
+                    newPos = RandomNavSphere(transform.position, wanderRadius, -1);
+                    agent.SetDestination(newPos);
+                    returnIndicator = true;
+                }
+                else if (returnIndicator == true) {
+                    agent.SetDestination(spawnPoint);
+                    returnIndicator = false;
+                }
+                timer2 = 0;
+            }
             if (gameObject.GetComponent<EnemyStats>().health < 100)
             {
                 gameObject.GetComponent<EnemyStats>().health++;
@@ -74,5 +90,16 @@ public class EnemyController : MonoBehaviour {
         Vector3 direction = (target.transform.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+    }
+    public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask) {
+        Vector3 randDirection = Random.insideUnitSphere * dist;
+
+        randDirection += origin;
+
+        NavMeshHit navHit;
+
+        NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+
+        return navHit.position;
     }
 }

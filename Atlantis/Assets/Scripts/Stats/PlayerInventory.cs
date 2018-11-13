@@ -25,7 +25,7 @@ public class PlayerInventory : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Item") {
+        if (other.tag == "Item" && storageIndicator < storageCapacity) {
             pickItem(other.gameObject);
             Destroy(other.gameObject);
         }
