@@ -20,7 +20,8 @@ public class EnemyStats : MonoBehaviour {
         }
     }
 
-    public void DealDamage(float damage) {
+    public void DealDamage(float damage)
+    {
         if (health > 0)
         {
             health -= damage;

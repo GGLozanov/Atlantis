@@ -13,7 +13,7 @@ public class EnemyController : MonoBehaviour {
     public float wanderRadius;
 
     private Vector3 spawnPoint, distanceCovored, spawnLocation, newPos;
-    private bool follow = true, returnIndicator = false;
+    private bool follow = true, returnIndicator = false, chasedStared = false;
     GameObject target;
     NavMeshAgent agent;
 
@@ -35,10 +35,12 @@ public class EnemyController : MonoBehaviour {
         timer2 += Time.deltaTime;
         if (distance <= lookRadius && follow == true)
         {
+            chasedStared = true;
             Vector3 currentLocation = new Vector3(Mathf.Abs(transform.position.x), Mathf.Abs(transform.position.y));
             distanceCovored = spawnLocation - currentLocation;
             timer -= Time.deltaTime;
             agent.SetDestination(target.transform.position);
+            target.GetComponent<PlayerStats>().inCombat = true;
             if (distance <= agent.stoppingDistance)
             {
                 if (timer < 0)
@@ -50,6 +52,11 @@ public class EnemyController : MonoBehaviour {
             }
         }
         else {
+            if(chasedStared == true)
+            {
+                target.GetComponent<PlayerStats>().inCombat = false;
+                chasedStared = false;
+            }
             if (timer2 >= wonderTimer)
             {
                 if (returnIndicator == false) {
@@ -73,6 +80,7 @@ public class EnemyController : MonoBehaviour {
         {
             agent.SetDestination(spawnPoint);
             follow = false;
+            target.GetComponent<PlayerStats>().inCombat = false;
             if (gameObject.GetComponent<EnemyStats>().health < 100) {
                 gameObject.GetComponent<EnemyStats>().health++;
             }

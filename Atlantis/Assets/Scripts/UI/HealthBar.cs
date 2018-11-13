@@ -36,6 +36,7 @@ public class HealthBar : MonoBehaviour {
         else {
             Experience_Text.GetComponent<Text>().text = (Player.GetComponent<PlayerStats>().level + 1) * 225 + "/" + (Player.GetComponent<PlayerStats>().level + 1) * 225;
         }
+
         Health_Bar.GetComponent<Image>().fillAmount = health / 100;
         Experience_Bar.GetComponent<Image>().fillAmount = experience / 450;
     }
