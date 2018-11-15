@@ -17,6 +17,7 @@ public class EnemyStats : MonoBehaviour {
             GameObject player = GameObject.Find("Player");
             player.GetComponent<PlayerStats>().AddExperiance(giveExp);
             Destroy(gameObject);
+            player.GetComponent<PlayerStats>().inCombat = false;
         }
     }
 
